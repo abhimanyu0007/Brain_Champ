@@ -21,69 +21,75 @@ class Register extends React.Component {
         this.setState({password: event.target.value})
     }
 
-    onSubmitSignIn =() =>{
-        console.log(this.state);
-        fetch('http://localhost:3000/register',{
-            method: 'post',
-            headers: {'Content-type': 'application/json'},
-            body: JSON.stringify({
-                email: this.state.email,
-                password: this.state.password,
-                name: this.state.name
-            })
-        })
-            .then(response => response.json())
-            // .then(response =>{ 
-            //     console.log('response',response.json());
-            //     response.json()})
-            .then(user =>{
-                //for below line '!==0' is also correct, but don't write '===true' cond
-                //wrote user.id so that it doesn't go directly on home page without registering, to understand it uncomment console.log
-                //(response()) and without filling anything click register, you'll see object in promise will be blank and hence below
-                //user.id will also get false as it is blank.
-
-                //you can't write only user bcouz if user is blank then it returns blank object and user will become through bcouz
-                //someting is getting returned, so use user.id.
-                if(user.id){
-                    //instead of user.id, user.name or user.password is also correct.
-                    //you can't console.log(user.id) bcouz you are using synchronous way and promises are asynchronous.
-                    this.props.loadUser(user)
-                    this.props.onRouteChange('home');
-                }
-            })
+    validate=()=>{
+        if((!this.state.email.includes("@"))){
+            console.error("invalid email");
         }
+        return true;
+    }
+
+    onSubmitSignIn =() =>{
+        const isValid = this.validate();
+        if(isValid){
+            fetch('http://localhost:3000/register',{
+                method: 'post',
+                headers: {'Content-type': 'application/json'},
+                body: JSON.stringify({
+                    email: this.state.email,
+                    password: this.state.password,
+                    name: this.state.name
+                })
+            })
+                .then(response => response.json())
+                .then(user =>{
+                    if(user.id){
+                        this.props.loadUser(user)
+                        this.props.onRouteChange('home');
+                    }
+                })
+        }
+    }
     render(){
+        const {onRouteChange} = this.props;
         return (
+            <div className="container-fluid" style={{margin: "51px 0px"}}>
+                <h1 className="container" style={{fontSize:"36px",margin:"-11px 0px 0p"}}>
+                    {"Create your account"}
+                </h1>
             <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
                 <main className="pa4 black-80">
                     <div className="measure">
                         <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
                             <legend className="f1 fw6 ph0 mh0">Register</legend>
                             <div className="mt3">
-                                <label className="db fw6 lh-copy f6" htmlFor="name">Name</label>
-                                <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
+                                <label className="form-label" htmlFor="exampleInputEmail1" style={{margin:"0px 215px 0px 0px"}}>Name</label>
+                                <input className="form-control" style={{border:"1px solid black", background:"#c0e0ff"}} placeholder="name"
                                 type="text" name="name" id="name" onChange={this.onNameChange}/>
                             </div>
                             <div className="mt3">
-                                <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                                <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
-                                type="email" name="email-address" id="email-address" onChange={this.onEmailChange}/>
+                                <label className="form-label" htmlFor="email-address" style={{margin:"0px 220px 0px 0px"}}>Email</label>
+                                <input className="form-control" style={{border:"1px solid black", background:"#c0e0ff"}} 
+                                placeholder="email" name="email-address" id="email-address" onChange={this.onEmailChange}/>
                             </div>
                             <div className="mv3">
-                                <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                                <input className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
+                                <label className="form-label" htmlFor="password" style={{margin:"0px 190px 0px 0px"}}>Password</label>
+                                <input className="form-control" style={{border:"1px solid black", background:"#c0e0ff"}} placeholder="password" 
                                 type="password" name="password" id="password" onChange={this.onPasswordChange}/>
                             </div>
                         </fieldset>
                         <div className="">
-                            {/* below home is used to run else statement used in app.js in Signin component, or you can take anything
-                            instead of home except Signin to make if statement false. */}
-                            <input onClick={this.onSubmitSignIn} className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" 
+                            <input onClick={this.onSubmitSignIn} className="btn btn-primary" 
                             type="submit" value="Register"/>
                         </div>
+                        <div className="container" style={{height:"17px"}}></div>
+                        <p>{"Already have an account?"}
+                            <span onClick={() => onRouteChange('signin')} className="f3 link dim black underline pa3 pointer" 
+                            style={{padding:"0px 2px", fontSize:"16px" ,color:"#003d93"}}>Sign In</span>
+                        </p>
                     </div>
                 </main>
             </article>
+            </div>
         );
     }   
 }

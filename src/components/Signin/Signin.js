@@ -1,4 +1,6 @@
 import React from 'react';
+import './Signin.css';
+import  MediaQuery from 'react-responsive';
 
 class Signin extends React.Component {
     constructor(props){
@@ -17,7 +19,6 @@ class Signin extends React.Component {
     }
 
     onSubmitSignIn =() =>{
-        console.log(this.state);
         fetch('http://localhost:3000/signin',{
             method: 'post',
             headers: {'Content-type': 'application/json'},
@@ -27,50 +28,58 @@ class Signin extends React.Component {
             })
         })
             .then(response => response.json())
-            // .then(response =>{ 
-            //     console.log('response',response.json());
-            //     response.json()})
             .then(user =>{
-                //for below line '!==false' is also correct, but don't write '===true' cond
                 if(user.id){
                     this.props.loadUser(user);
                     this.props.onRouteChange('home');
                 }
             })
-        //this.props.onRouteChange('home');
     }
     render(){
-        //if you don't mention below line then, write this.props.onRouteChange in line 25 & 28
         const {onRouteChange} = this.props;
         return (
-            <article className="br3 ba b--black-10 mv4 w-100 w-50-m w-25-l mw6 shadow-5 center">
-                <main className="pa4 black-80">
+            <div className="container-fluid" style={{margin: "51px 0px"}}>
+                <MediaQuery minWidth={0} and maxWidth={385}>
+                <h1 className="container" id="signinH1" style={{fontSize:"43px",margin:"-11px 0px 0p"}}>
+                    {"Brain Champ"}
+                </h1>
+                </MediaQuery>
+                <MediaQuery minWidth={385} and maxWidth={1536}>
+                <h1 className="container" id="signinH1" style={{fontSize:"64px",margin:"-11px 0px 0p"}}>
+                    {"Brain Champ"}
+                </h1>
+                </MediaQuery>
+
+            
+            <article className="br3 ba b--black-10 mv4 w-80 w-50-m w-25-l mw6 shadow-5 center" >
+                <main className="pa4 black-80 container">
                     <div className="measure">
                         <fieldset id="sign_up" className="ba b--transparent ph0 mh0">
                             <legend className="f1 fw6 ph0 mh0">Sign In</legend>
                             <div className="mt3">
-                                <label className="db fw6 lh-copy f6" htmlFor="email-address">Email</label>
-                                <input className="pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
-                                type="email" name="email-address" id="email-address" onChange={this.onEmailChange}/>
+                                <input type="email" className="form-control" id="email-address" aria-describedby="emailHelp"
+                                 onChange={this.onEmailChange} style={{border:"1px solid black", background:"#c0e0ff"}} placeholder="email"/>
                             </div>
                             <div className="mv3">
-                                <label className="db fw6 lh-copy f6" htmlFor="password">Password</label>
-                                <input className="b pa2 input-reset ba bg-transparent hover-bg-black hover-white w-100" 
-                                type="password" name="password" id="password" onChange={this.onPasswordChange}/>
+                                <input type="password" className="form-control" id="password" aria-describedby="emailHelp" 
+                                onChange={this.onPasswordChange} style={{background:"#c0e0ff",border:"1px solid black"}} placeholder="password"/>
                             </div>
                         </fieldset>
                         <div className="">
-                            {/* below home is used to run else statement used in app.js in Signin component, or you can take anything
-                            instead of home except Signin to make if statement false. */}
-                            <input onClick={this.onSubmitSignIn} className="b ph3 pv2 input-reset ba b--black bg-transparent grow pointer f6 dib" type="submit" value="Sign in"/>
+                            <input onClick={this.onSubmitSignIn} className="btn btn-primary" type="submit" value="Sign in"/>
                         </div>
-                        <div className="lh-copy mt3">
-                            <p onClick={() =>onRouteChange('register')} className="f6 link dim black db pointer">Register</p>
-                        </div>
+                        <div className="container" style={{height:"17px"}}></div>
+                        <p id="signinP">{"Don't have an account?"}
+                        <span onClick={() => onRouteChange('register')} className="f3 link dim black underline pa3 pointer" 
+                            style={{padding:"0px 2px", fontSize:"16px" ,color:"#003d93"}}>Register</span>
+                        </p>
                     </div>
                 </main>
             </article>
-    
+            <p className="f3" style={{fontSize:"26px",fontWeight:"bold",color:"#1c3d6c"}}>
+                {"Brain Champ detects faces in your picture"}
+            </p>
+            </div>
         );
     }   
 }
